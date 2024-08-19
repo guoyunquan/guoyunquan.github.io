@@ -22,29 +22,29 @@
     <meta name="description" content="基于jdk1.8的jvm总结.md什么是jvm jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机中运行，不同的平台有不同的虚拟机制，后续适配的工作是jvm做的  jvm具体干了什么 要回答这个问题，先要大致对jvm中代码运行的流程有一个了解： 首先我们最开">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于jdk1.8的jvm总结">
-<meta property="og:url" content="http://example.com/2024/04/26/%E5%9F%BA%E4%BA%8Ejdk1.8%E7%9A%84jvm%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:url" content="https://blog.gyq-me.top/2024/04/26/%E5%9F%BA%E4%BA%8Ejdk1.8%E7%9A%84jvm%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="基于jdk1.8的jvm总结.md什么是jvm jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机中运行，不同的平台有不同的虚拟机制，后续适配的工作是jvm做的  jvm具体干了什么 要回答这个问题，先要大致对jvm中代码运行的流程有一个了解： 首先我们最开">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
-<meta property="og:image" content="http://example.com/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png">
-<meta property="og:image" content="http://example.com/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png">
-<meta property="og:image" content="http://example.com/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png">
-<meta property="og:image" content="http://example.com/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png">
-<meta property="og:image" content="http://example.com/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png">
-<meta property="og:image" content="http://example.com/images/test1234565432.png">
-<meta property="og:image" content="http://example.com/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png">
-<meta property="og:image" content="http://example.com/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png">
-<meta property="og:image" content="http://example.com/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png">
-<meta property="og:image" content="http://example.com/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png">
-<meta property="og:image" content="http://example.com/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/test1234565432.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png">
+<meta property="og:image" content="https://blog.gyq-me.top/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png">
 <meta property="article:published_time" content="2024-04-26T01:25:00.000Z">
 <meta property="article:modified_time" content="2024-08-19T14:12:15.147Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="jvm">
 <meta property="article:tag" content="jdk">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
+<meta name="twitter:image" content="https://blog.gyq-me.top/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
   
   
   
@@ -86,7 +86,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.gyq-me.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":20,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -112,7 +112,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>Fluid</strong>
+      <strong>沉淀の小屋</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -690,7 +690,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>基于jdk1.8的jvm总结</div>
-      <div>http://example.com/2024/04/26/基于jdk1.8的jvm总结/</div>
+      <div>https://blog.gyq-me.top/2024/04/26/基于jdk1.8的jvm总结/</div>
     </div>
     <div class="license-meta">
       

@@ -1,108 +1,296 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    
+<html lang="zh-CN" data-default-color-scheme=auto>
 
-    
-<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
-    
 
-<meta charset="utf-8" >
 
-<title>基于jdk1.8的jvm总结</title>
-<meta name="keywords" content="基于jdk1.8的jvm总结, Hexo">
-<meta name="description" content="基于jdk1.8的jvm总结.md什么是jvm
-jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="郭雲铨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基于jdk1.8的jvm总结.md什么是jvm jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机中运行，不同的平台有不同的虚拟机制，后续适配的工作是jvm做的  jvm具体干了什么 要回答这个问题，先要大致对jvm中代码运行的流程有一个了解： 首先我们最开">
+<meta property="og:type" content="article">
 <meta property="og:title" content="基于jdk1.8的jvm总结">
-<meta property="og:description" content="基于jdk1.8的jvm总结.md什么是jvm
-jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机">
+<meta property="og:url" content="http://example.com/2024/04/26/%E5%9F%BA%E4%BA%8Ejdk1.8%E7%9A%84jvm%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基于jdk1.8的jvm总结.md什么是jvm jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即一次编译，到处运行，简单理解就是，代码不变，编译后的class文件要在虚拟机中运行，不同的平台有不同的虚拟机制，后续适配的工作是jvm做的  jvm具体干了什么 要回答这个问题，先要大致对jvm中代码运行的流程有一个了解： 首先我们最开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
+<meta property="og:image" content="http://example.com/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png">
+<meta property="og:image" content="http://example.com/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png">
+<meta property="og:image" content="http://example.com/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png">
+<meta property="og:image" content="http://example.com/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png">
+<meta property="og:image" content="http://example.com/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png">
+<meta property="og:image" content="http://example.com/images/_E5HGIts59Okw1J8ds1g2R9tIZ1qMNFFyuGCMSyXgpg.png">
+<meta property="og:image" content="http://example.com/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png">
+<meta property="og:image" content="http://example.com/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png">
+<meta property="og:image" content="http://example.com/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png">
+<meta property="og:image" content="http://example.com/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png">
+<meta property="og:image" content="http://example.com/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png">
+<meta property="article:published_time" content="2024-04-26T01:25:00.000Z">
+<meta property="article:modified_time" content="2024-08-19T09:26:02.864Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="jvm">
+<meta property="article:tag" content="jdk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png">
+  
+  
+  
+  <title>基于jdk1.8的jvm总结 - Hexo</title>
 
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="/style/main.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
-  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 7.3.0"></head>
-  <body>
-    <div id="app" class="main">
 
-<div class="site-header-container">
-  <div class="site-header">
-    <div class="left">
-      <a href="http://example.com">
-        <img class="avatar" src="/images/avatar.png" alt="logo" width="32px" height="32px">
-      </a>
-      <a href="http://example.com">
-        <h1 class="site-title">Hexo</h1>
-      </a>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
-    <div class="right">
-        <i class="icon menu-switch icon-menu-outline" ></i>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于jdk1.8的jvm总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-26 09:25" pubdate>
+          2024年4月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
     </div>
   </div>
 </div>
 
-<div class="menu-container" style="height: 0;opacity: 0;">
-<nav class="menu-list">
-  
-    
-      <a href="/" class="menu purple-link">
-        首页
-      </a>
-    
-  
-    
-      <a href="/tags" class="menu purple-link">
-        标签
-      </a>
-    
-  
-    
-      <a href="/archives" class="menu purple-link">
-        归档
-      </a>
-    
-  
-    
-      <a href="/about" class="menu purple-link">
-        关于
-      </a>
-    
-  
-</nav>
 </div>
 
+  </header>
 
-
-  <div class="content-container">
-    <div class="post-detail">
+  <main>
+    
       
-      <h2 class="post-title">基于jdk1.8的jvm总结</h2>
-      <div class="post-info post-detail-info">
-        <span><i class="icon icon-calendar-outline"></i> 2024-04-26</span>
-        
-          <span>
-          <i class="icon icon-pricetags-outline"></i>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">基于jdk1.8的jvm总结</h1>
             
-              <a href="/tags/jvm/">
-              jvm
-                
-                  ，
-                
-              </a>
             
-              <a href="/tags/jdk/">
-              jdk
+              <div class="markdown-body">
                 
-              </a>
-            
-          </span>
-        
-      </div>
-      <div class="post-content-wrapper">
-        <div class="post-content">
-          <h1 id="基于jdk1-8的jvm总结-md"><a href="#基于jdk1-8的jvm总结-md" class="headerlink" title="基于jdk1.8的jvm总结.md"></a>基于jdk1.8的jvm总结.md</h1><h2 id="什么是jvm"><a href="#什么是jvm" class="headerlink" title="什么是jvm"></a>什么是jvm</h2><ol>
+                <h1 id="基于jdk1-8的jvm总结-md"><a href="#基于jdk1-8的jvm总结-md" class="headerlink" title="基于jdk1.8的jvm总结.md"></a>基于jdk1.8的jvm总结.md</h1><h2 id="什么是jvm"><a href="#什么是jvm" class="headerlink" title="什么是jvm"></a>什么是jvm</h2><ol>
 <li>jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信息，只需要编译后的字节码，就能在任何平台运行，即<strong>一次编译，到处运行，</strong>简单理解就是，代码不变，编译后的class文件要在虚拟机中运行，不同的平台有不同的虚拟机制，后续适配的工作是jvm做的</li>
 </ol>
 <h2 id="jvm具体干了什么"><a href="#jvm具体干了什么" class="headerlink" title="jvm具体干了什么"></a>jvm具体干了什么</h2><ol>
@@ -120,7 +308,7 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <li>这样，我们的同级目录就会多一个<strong>TestDemo.class</strong>文件，后续也是执行该文件</li>
 <li>接下来就是jvm中的操作了，讲述操作前，先说一下jvm中有些什么</li>
 </ol>
-<h3 id="jvm模型"><a href="#jvm模型" class="headerlink" title="jvm模型"></a>jvm模型</h3><p><a class="simple-lightbox" href="/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png"><img   src="/images/loading.svg" data-src="/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png"  alt="image" lazyload></a><br>实际上，jvm的模型是很复杂的，这里只是画了比较重要的一些模块，挨个解释一下</p>
+<h3 id="jvm模型"><a href="#jvm模型" class="headerlink" title="jvm模型"></a>jvm模型</h3><p><img src="/images/lJcOM1LYCb_IpRe_qQ3oSpHv0WHIu2ceBOFhALVGQR8.png" srcset="/img/loading.gif" lazyload alt="image"><br>实际上，jvm的模型是很复杂的，这里只是画了比较重要的一些模块，挨个解释一下</p>
 <h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><ol>
 <li><strong>类加载器</strong>：字面意思，你写完的代码编译成字节码，然后需要jvm处理你的代码逻辑，在处理之前，需要加载你的类，具体加载的类是什么，先看下面demo</li>
 </ol>
@@ -136,14 +324,14 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 </ul>
 <p>知道上面的概念，我们对号入座一下，平时自己写的类，如<strong>TestDemo</strong>的类加载器就是<strong>应用程序类加载器</strong>，所以是$AppClassLoader</p>
 <p>他的父级（没有父子关系），就是拓展类加载器，具体位置如下图</p>
-<p><a class="simple-lightbox" href="/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png"><img   src="/images/loading.svg" data-src="/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png"  alt="image" lazyload></a></p>
+<p><img src="/images/56o2uQ_yIMRKA55ijQmur_Jo8ztgwi1-H6B3t8MXj0o.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <p>ps：想要看<strong>ext</strong>下面的类，就反编译<strong>ext</strong>路径下面的类测试一下，我随便找了一个，我们可以看看下面demo</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">classLoader</span> <span class="hljs-operator">=</span> TimeZoneNames_af.class.getClassLoader();<br>        System.out.println(classLoader);<br>    &#125;<br><br><span class="hljs-comment">//结果</span><br>sun.misc.Launcher$ExtClassLoader@53d8d10a<br></code></pre></td></tr></table></figure>
 <p>引导类加载器（BootstrapClassloader）就更常见了，我们用的String，Object都是里面的类</p>
 <p><strong>BootstrapClassloader为什么是null？</strong></p>
 <p>网上大部分是说：BootstrapClassLoader 最顶层的加载类，主要加载核心类库。BootstrapClassLoader是由C&#x2F;C++编写的，它本身是虚拟机的一部分。 Object.class.getClassLoader()的返回值为null，因为Object类由Bootstrap ClassLoader加载，且Bootstrap ClassLoader不是一个java类，所以没有Bootstrap ClassLoader的java实例化对象，因此返回值为null。</p>
 <p>这个我也不懂，因为没办法验证，但是我看了看源码，注释是这样的</p>
-<p><a class="simple-lightbox" href="/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png"><img   src="/images/loading.svg" data-src="/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png"  alt="image" lazyload></a></p>
+<p><img src="/images/YY385fnZYl4ucBsWfhSkkUbfor8lxMEwZ9t6UxHIrjA.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <p>所以，当你查询是null的时候，默认就是<strong>引导类加载器</strong>加载了这个类</p>
 <ol>
 <li><strong>双亲委派机制：</strong>双亲委派机制百度的解释是这样的【双亲委派机制（Parent Delegation Mechanism）是Java中的一种类加载机制。在Java中，类加载器负责加载类的字节码并创建对应的Class对象。双亲委派机制是指当一个类加载器收到类加载请求时，它会先将该请求委派给它的父类加载器去尝试加载。只有当父类加载器无法加载该类时，子类加载器才会尝试加载。】<ol>
@@ -182,7 +370,7 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <p>底层控制鼠标也是用了别的语言的方法</p>
 <p>这里就能提出一个新的概念<strong>JNI</strong></p>
 <h5 id="JNI"><a href="#JNI" class="headerlink" title="JNI"></a>JNI</h5><p>JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。从Java1.1开始，JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互</p>
-<p><a class="simple-lightbox" href="/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png"><img   src="/images/loading.svg" data-src="/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png"  alt="image" lazyload></a></p>
+<p><img src="/images/HeeRR8bhpU2jo8g8uwioAj-cDVwQ0BWa-iws8uJTIFQ.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <p>通常情况下我们一般使用<code>jni</code>用来调用c或c++中的代码，下面的流程来描述了<code>native</code>方法的调用过程：</p>
 <blockquote>
 <p>Java Code -&gt; JNI -&gt; C&#x2F;C++ Code</p>
@@ -276,7 +464,7 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <ol start="4">
 <li>上面的代码，最开始调用了一个main方法，然后main中调用了a方法，栈中结构如下</li>
 </ol>
-<p><a class="simple-lightbox" href="/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png"><img   src="/images/loading.svg" data-src="/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png"  alt="image" lazyload></a></p>
+<p><img src="/images/XYW26ax5TMs4UG2rN3XsMTs8b9U5FM7VUlh2KfRw05s.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <ol start="5">
 <li>栈的基本结构知道了，那说一个我们写代码偶尔会犯的错</li>
 </ol>
@@ -291,7 +479,7 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <li>b再调用a方法，栈中再压入a方法</li>
 <li>死循环压入a、b方法 栈的空间爆了，就会爆<strong>StackOverflowError</strong></li>
 </ul>
-<p><a class="simple-lightbox" href="/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png"><img   src="/images/loading.svg" data-src="/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png"  alt="image" lazyload></a></p>
+<p><img src="/images/JFNRs9T7aBY1kBmM8d8V1IuoWaUvgGLR_KFLZUJqwOo.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <ol start="6">
 <li>实际上，栈的真实结构还是要更复杂一点的，栈的每一节都是由<strong>栈帧</strong>构成的，<strong>栈帧</strong>是什么样的呢？栈帧里面包含子栈，父栈，局部变量，操作数栈<ol>
 <li>父栈就是初始方法栈，比如main方法中调用add方法，父栈存main；子栈是被调用方法，子栈存add</li>
@@ -300,8 +488,8 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 </ol>
 </li>
 </ol>
-<p><a class="simple-lightbox" href="/images/_E5HGIts59Okw1J8ds1g2R9tIZ1qMNFFyuGCMSyXgpg.png"><img   src="/images/loading.svg" data-src="/images/_E5HGIts59Okw1J8ds1g2R9tIZ1qMNFFyuGCMSyXgpg.png"  alt="image" lazyload></a></p>
-<pre><code>  1. 举个栗子：
+<p><img src="/images/_E5HGIts59Okw1J8ds1g2R9tIZ1qMNFFyuGCMSyXgpg.png" srcset="/img/loading.gif" lazyload alt="image"></p>
+<pre><code class="hljs">  1. 举个栗子：
 </code></pre>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Calculator</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">multiply</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> &#123;<br>        <span class="hljs-keyword">return</span> a * b;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> &#123;<br>        <span class="hljs-keyword">return</span> a + b;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compute</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">x</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">y</span> <span class="hljs-operator">=</span> <span class="hljs-number">3</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">z</span> <span class="hljs-operator">=</span> <span class="hljs-number">4</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> add(multiply(x, y), z);<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Calculator</span> <span class="hljs-variable">calculator</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Calculator</span>();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">finalResult</span> <span class="hljs-operator">=</span> calculator.compute();<br>        System.out.println(finalResult);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 <p>我们来分析一下栈结构中怎么存储这段代码</p>
@@ -415,22 +603,22 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <h5 id="一个常见的堆的问题"><a href="#一个常见的堆的问题" class="headerlink" title="一个常见的堆的问题"></a>一个常见的堆的问题</h5><p>我们经常听过一个问题<strong>OOM</strong>，这是个什么东西，OOM，全称：<strong>OutOfMemoryError****，</strong>我们理解一下，内存溢出，什么溢出，总不可能是栈溢出，因为栈溢出之前已经理解了，栈中东西对太多直接会爆<strong>StackOverflowError</strong>，OOM是把内存撑爆了，那就只有堆能创造这个报错，那么我们就可以人为模拟一下这个错误，刚才讲过，方法中的<strong>基本变量</strong>是存到<strong>栈</strong>的<strong>局部变量表</strong>中的，要给堆中塞东西，就要用到<strong>引用变量</strong>了</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">str</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            str.append(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextInt(<span class="hljs-number">99999999</span>));<br>        &#125;<br>    &#125;<br>&#125;<br><br><br><br><br><span class="hljs-comment">//结果</span><br>Exception in thread <span class="hljs-string">&quot;main&quot;</span> java.lang.OutOfMemoryError: Java heap space<br>	at java.util.Arrays.copyOf(Arrays.java:<span class="hljs-number">3332</span>)<br>	at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:<span class="hljs-number">124</span>)<br>	at java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:<span class="hljs-number">674</span>)<br>	at java.lang.StringBuilder.append(StringBuilder.java:<span class="hljs-number">214</span>)<br>	at com.gyq.openAi.Test.main(Test.java:<span class="hljs-number">19</span>)<br></code></pre></td></tr></table></figure>
 <p>调用这个方法，最好将默认堆内存和最大堆内存设置的小一点，要不然复现时间长</p>
-<p><a class="simple-lightbox" href="/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png"><img   src="/images/loading.svg" data-src="/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png"  alt="image" lazyload></a></p>
+<p><img src="/images/T80QLyF-QceyjlmNsENc-FMxcUaiP1OFMYB_wLPVAmg.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <h5 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h5><ol>
 <li>堆中区分区块<ol>
 <li>刚才我们了解了堆中存放的对象是什么，现在我们了解一下堆中内存的分区</li>
 </ol>
 </li>
 </ol>
-<h6 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h6><p><a class="simple-lightbox" href="/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png"><img   src="/images/loading.svg" data-src="/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png"  alt="image" lazyload></a></p>
+<h6 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h6><p><img src="/images/t6wLgwaN7ZxcjO7IPw0La7WB0LP7bmvu5ni-XkRrRCE.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <ul>
 <li>优点：不需要额外的空间。</li>
 <li>缺点：两次扫描，严重浪费时间，会产生内存碎片。</li>
 </ul>
-<h6 id="标记清除压缩法"><a href="#标记清除压缩法" class="headerlink" title="标记清除压缩法"></a>标记清除压缩法</h6><p><a class="simple-lightbox" href="/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png"><img   src="/images/loading.svg" data-src="/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png"  alt="image" lazyload></a></p>
+<h6 id="标记清除压缩法"><a href="#标记清除压缩法" class="headerlink" title="标记清除压缩法"></a>标记清除压缩法</h6><p><img src="/images/rbIJWuviMkLJ_llqsCRXqnFq5OsjdI41eAK-88IgGCw.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <h6 id="标记清除压缩（改进）"><a href="#标记清除压缩（改进）" class="headerlink" title="标记清除压缩（改进）"></a>标记清除压缩（改进）</h6><p>可以进行多次标记清除后，再进行一次压缩。</p>
-<h6 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h6><p><a class="simple-lightbox" href="/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png"><img   src="/images/loading.svg" data-src="/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png"  alt="image" lazyload></a></p>
-<p><a class="simple-lightbox" href="/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png"><img   src="/images/loading.svg" data-src="/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png"  alt="image" lazyload></a></p>
+<h6 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h6><p><img src="/images/ilFdZ2sgNJNfMTZlENxby8VX-lVPuHspNw8qAPPHb9M.png" srcset="/img/loading.gif" lazyload alt="image"></p>
+<p><img src="/images/6aaoBDJ88ImUtUL0eI8TcpawaoKqAGiSRHUfeis42MA.png" srcset="/img/loading.gif" lazyload alt="image"></p>
 <ul>
 <li>好处：没有内存的碎片。</li>
 <li>坏处：浪费了内存空间（多了一半空间to永远是空）。假设对象100%存活（极端情况），不适合使用复制算法。</li>
@@ -455,17 +643,159 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 <li>标记清除（内存碎片不是太多）+标记压缩混合实现</li>
 </ul>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Markdown/" class="category-chain-item">Markdown</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/jvm/" class="print-no-link">#jvm</a>
+      
+        <a href="/tags/jdk/" class="print-no-link">#jdk</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于jdk1.8的jvm总结</div>
+      <div>http://example.com/2024/04/26/基于jdk1.8的jvm总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>郭雲铨</div>
         </div>
-          
-        <div class="top-div">
-          <ol class="top-box"><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E5%9F%BA%E4%BA%8Ejdk1-8%E7%9A%84jvm%E6%80%BB%E7%BB%93-md"><span class="top-box-text">基于jdk1.8的jvm总结.md</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFjvm"><span class="top-box-text">什么是jvm</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#jvm%E5%85%B7%E4%BD%93%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88"><span class="top-box-text">jvm具体干了什么</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#jvm%E6%A8%A1%E5%9E%8B"><span class="top-box-text">jvm模型</span></a></li></ol></li></ol></li></ol>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月26日</div>
         </div>
-          
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/19/hello-world/" title="Hello World">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
       </div>
     </div>
 
-    
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
   </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
 
 
 
@@ -473,52 +803,207 @@ jvm是java程序运行时的虚拟机，java屏蔽了与操作系统相关的信
 
 
 
-
-
-
-<footer>
-<div class="site-footer">
-  <div class="social-container">
     
-      
-        <a aria-label="跳转至github" href="https://github.com/f-dong" target="_blank">
-          <i class="icon icon-github"></i>
-        </a>
-      
+
     
-      
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
     
-      
+
     
-      
-    
-      
-    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
   </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
   
-    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
-  
-  
-  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
   
   
 </div>
-</footer>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
 
 
-      </div>
-    </div>
-    
-<script id="hexo-configurations"> window.theme_config = {"image":{"lazyload_enable":true,"photo_zoom":"simple-lightbox"}}; window.is_post = true; </script>
-
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
 
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
 
 
 
-  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
 </html>
-

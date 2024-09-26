@@ -19,18 +19,18 @@
   <meta name="author" content="郭雲铨">
   <meta name="keywords" content="">
   
-    <meta name="description" content="rabbitmq基本操作.md[toc] 集成springboot 新增依赖  1234&lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;spring-boot-starter-amqp&lt;&#x2F;artifactId&gt; &lt;&#x2F;depend">
+    <meta name="description" content="rabbitmq基本操作.md集成springboot 新增依赖  1234&lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;spring-boot-starter-amqp&lt;&#x2F;artifactId&gt; &lt;&#x2F;dependency&amp;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rabbitmq基本操作">
 <meta property="og:url" content="https://blog.gyq-me.top/2024/09/26/rabbitmq%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="rabbitmq基本操作.md[toc] 集成springboot 新增依赖  1234&lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;spring-boot-starter-amqp&lt;&#x2F;artifactId&gt; &lt;&#x2F;depend">
+<meta property="og:description" content="rabbitmq基本操作.md集成springboot 新增依赖  1234&lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;spring-boot-starter-amqp&lt;&#x2F;artifactId&gt; &lt;&#x2F;dependency&amp;g">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.gyq-me.top/images/B42IYK9Qg5al8fhu_VSZOm3gU9k0JauW40piYCtDoR0.png">
 <meta property="og:image" content="https://blog.gyq-me.top/images/bQxcFIV1TlIcwS_5we9TweQ66y22S4c-5my7mrze6ps.png">
 <meta property="og:image" content="https://blog.gyq-me.top/images/FtkB9Fj5HuMtxEHxzQaa5Be8z_MbZCLYTkniQi8i9CE.png">
-<meta property="article:published_time" content="2024-09-26T02:39:24.312Z">
-<meta property="article:modified_time" content="2024-09-26T02:39:24.320Z">
+<meta property="article:published_time" content="2024-09-26T02:42:11.336Z">
+<meta property="article:modified_time" content="2024-09-26T02:42:11.336Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="rabbitmq">
 <meta name="twitter:card" content="summary_large_image">
@@ -215,7 +215,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-26 10:39" pubdate>
+        <time datetime="2024-09-26 10:42" pubdate>
           2024年9月26日 上午
         </time>
       </span>
@@ -280,8 +280,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="rabbitmq基本操作-md"><a href="#rabbitmq基本操作-md" class="headerlink" title="rabbitmq基本操作.md"></a>rabbitmq基本操作.md</h1><p>[toc]</p>
-<h2 id="集成springboot"><a href="#集成springboot" class="headerlink" title="集成springboot"></a>集成springboot</h2><ol>
+                <h1 id="rabbitmq基本操作-md"><a href="#rabbitmq基本操作-md" class="headerlink" title="rabbitmq基本操作.md"></a>rabbitmq基本操作.md</h1><h2 id="集成springboot"><a href="#集成springboot" class="headerlink" title="集成springboot"></a>集成springboot</h2><ol>
 <li>新增依赖</li>
 </ol>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-amqp<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
@@ -374,6 +373,7 @@
 
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//结果</span><br><span class="hljs-number">10</span>:<span class="hljs-number">27</span>:<span class="hljs-number">49</span><br>接收到延迟消息: 我来助你！<span class="hljs-number">10</span>:<span class="hljs-number">27</span>:<span class="hljs-number">39</span><br></code></pre></td></tr></table></figure>
+
                 
               </div>
             

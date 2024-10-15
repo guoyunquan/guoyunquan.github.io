@@ -495,13 +495,13 @@
       
         jQuery.ajax({
           type: 'GET',
-          url: 'https://api.bi71t5.cn/api/shehui.php?type=json',
+          url: 'https://v1.hitokoto.cn/',
           headers: {},
           dataType: 'json',
           success: function(result) {
             var apiText;
             if (result) {
-              var keys = 'text'.split(',');
+              var keys = 'hitokoto'.split(',');
               if (result instanceof Array) {
                 result = result[0];
               }
@@ -519,7 +519,7 @@
           },
           error: function(xhr, status, error) {
             if (error) {
-              console.error('Failed to request https://api.bi71t5.cn/api/shehui.php?type=json:', error);
+              console.error('Failed to request https://v1.hitokoto.cn/:', error);
             }
             typing(text);
           }
